@@ -1,19 +1,18 @@
-import PySimpleGUI as sg
 from backend import *
 
 create_database()
 
-sg.theme("DefaultNoMoreNagging")
+sg.theme("DarkGrey3")
 
 layout = [
-    [sg.Text("PACKAN'S MEMBERSHIP MANAGEMENT", font=("Arial", 32))],
-    [sg.Text("Select an option below to proceed.", font=("Arial", 24))],
-    [sg.Button("ADD MEMBER", key="-ADD-"),
-     sg.Button("VIEW ALL MEMBERS", key="-VIEW-"),
-     sg.Button("EDIT OR REMOVE MEMBER", key="-EDIT-")]
+    [sg.Text("PACKAN'S MEMBERSHIP MANAGEMENT\n", font=header_font)],
+    [sg.Text("Select an option below to proceed.", font=subtitle_font)],
+    [sg.Button("ADD MEMBER", key="-ADD-", size=(20, 1)),
+     sg.Button("VIEW MEMBERS", key="-VIEW-", size=(20, 1)),
+     sg.Button("EDIT MEMBER", key="-EDIT-", size=(20, 1))]
 ]
 
-window = sg.Window("PACKAN'S MEMBERSHIP MANAGEMENT", layout)
+window = sg.Window("PACKAN'S MEMBERSHIP MANAGEMENT", layout, font=default_font)
 
 while True:
     event, values = window.read()
@@ -21,7 +20,7 @@ while True:
         break
 
     if event == "-ADD-":
-        print("ADD")
+        Windows.add_window()
 
     if event == "-VIEW-":
         print("VIEW")
