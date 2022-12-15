@@ -72,7 +72,7 @@ class Windows:
                 Windows.success_window("added")
                 break
 
-            if event == sg.WIN_CLOSED:
+            elif event == sg.WIN_CLOSED or event == "-CANCEL-":
                 break
 
         window.close()
