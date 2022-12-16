@@ -23,9 +23,6 @@ while True:
         Windows.add_window()
 
     if event == "-VIEW-":
-        print("VIEW")
-
-    if event == "-EDIT-":
-        print("EDIT")
+        Windows.view_window()
 
 window.close()
