@@ -13,15 +13,16 @@ def create_database():
         first_name VARCHAR(25) NOT NULL,
         last_name VARCHAR(25) NOT NULL,
         address VARCAHR(50) NOT NULL,
-        zip_code INTEGER NOT NULL ); """)
+        zip_code INTEGER NOT NULL,
+        payed_membership BOOLEAN NOT NULL CHECK (payed_membership IN (TRUE, FALSE))); """)
     conn.execute(query)
     conn.close()
 
 
-def insert_contact(first_name, last_name, address, zip_code):
+def insert_contact(first_name, last_name, address, zip_code, payed_membership):
     insert_conn = sqlite3.connect("member_database.db")
-    insert_conn.execute(""" INSERT INTO MEMBERS (first_name, last_name, address, zip_code) 
-        VALUES (?, ?, ?, ?) """, (first_name, last_name, address, zip_code))
+    insert_conn.execute(""" INSERT INTO MEMBERS (first_name, last_name, address, zip_code, payed_membership) 
+        VALUES (?, ?, ?, ?, ?) """, (first_name, last_name, address, zip_code, payed_membership))
     insert_conn.commit()
     insert_conn.close()
 
@@ -48,6 +49,7 @@ class Windows:
                   [sg.Text("Last name", size=(15, 1)), sg.Input(key="-LAST_NAME-")],
                   [sg.Text("Adress", size=(15, 1)), sg.Input(key="-ADDRESS-")],
                   [sg.Text("Zip Code", size=(15, 1)), sg.Input(key="-ZIPCODE-")],
+                  [sg.Checkbox('Person has payed for membership', default=False, key="-MEMBERSHIP_CHECK-")],
                   [sg.Text("")],
                   [sg.Push(),
                    sg.Button("CANCEL", key="-CANCEL-", size=(20, 1)),
@@ -59,11 +61,19 @@ class Windows:
             event, values = window.read()
 
             if event == "-CONFIRM-":
-                print(values["-FIRST_NAME-"])
+
                 insert_contact(values["-FIRST_NAME-"],
                                values["-LAST_NAME-"],
                                values["-ADDRESS-"],
-                               values["-ZIPCODE-"])
+                               values["-ZIPCODE-"],
+                               values["-MEMBERSHIP_CHECK-"])
+
+                """elif not values["-MEMBERSHIP_CHECK-"]:
+                    insert_contact(values["-FIRST_NAME-"],
+                                   values["-LAST_NAME-"],
+                                   values["-ADDRESS-"],
+                                   values["-ZIPCODE-"],
+                                   values["-MEMBERSHIP_CHECK-"])"""
 
                 Windows.success_window("added")
                 break
@@ -81,27 +91,27 @@ class Windows:
         cursor.execute("SELECT * FROM members")
         rows = cursor.fetchall()
 
-        layout = [[sg.Push(),
-                   sg.InputText(key='-SEARCH_BOX-', size=(30, 1)),
-                   sg.Button("SEARCH", key="-SEARCH-")],
+        layout = [[sg.Button("SEARCH", key="-SEARCH-"),
+                   sg.InputText(default_text="Search for a member...", key='-SEARCH_BOX-', size=(30, 1))],
                   [sg.Text("")],
                   [sg.Push(),
                    sg.Table(values=rows,
-                            headings=["Member ID", "First Name", "Last Name", "Address", "Zip Code"],
+                            headings=["Member ID", "First Name", "Last Name", "Address", "Zip Code", "Payed"],
                             auto_size_columns=True,
                             justification="center",
-                            num_rows=min(len(rows), 40),
                             row_height=25,
                             key='-TABLE-',
-                            size=(600, 600)),
-                   sg.Push()]]
+                            enable_events=True,
+                            alternating_row_color='IndianRed4',
+                            select_mode=sg.TABLE_SELECT_MODE_BROWSE),
+                   sg.Push()],
+                  [sg.Text("")],
+                  [sg.Text("Enter a Member_ID to delete")],
+                  [sg.Button("DELETE", key="-DELETE-"), sg.Input("Member_ID...", key="-MEMBER_ID_TO_DELETE-")]]
 
-        window = sg.Window("Members Table", layout, modal=True, font=default_font, size=(650, 500))
+        window = sg.Window("Members Table", layout, modal=True, font=default_font)
         window.read()
 
-        # TODO: add button event for edit that opens up window with input boxes for all attributes.
-        # TODO: add button event to delete a member
-        # TODO: fix table size
         while True:
             event, values = window.read()
             if event == sg.WIN_CLOSED:
@@ -110,12 +120,21 @@ class Windows:
             if event == '-SEARCH-':
                 search_term = values['-SEARCH_BOX-']
                 cursor.execute("SELECT * FROM members WHERE member_id LIKE ?"
-                               "OR first_name LIKE ? " 
+                               "OR first_name LIKE ? "
                                "OR last_name LIKE ?",
                                ('%' + search_term + '%', '%' + search_term + '%', '%' + search_term + '%'))
                 rows = cursor.fetchall()
                 window['-TABLE-'].Update(values=rows)
 
+            if event == "-DELETE-":
+                member_id = values["-MEMBER_ID_TO_DELETE-"]
+                cursor.execute("DELETE FROM members WHERE member_id = ?", (member_id,))
+                rows_deleted = cursor.rowcount
+                if rows_deleted > 0:
+                    cursor.execute("SELECT * FROM members")
+                    rows = cursor.fetchall()
+                    window['-TABLE-'].Update(values=rows)
+                else:
+                    print("No rows were deleted")
 
 
-        conn.close()
