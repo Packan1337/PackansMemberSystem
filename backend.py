@@ -5,7 +5,6 @@ header_font = ("Arial", 32)
 subtitle_font = ("Arial", 24)
 default_font = ("Arial", 16)
 
-
 def create_database():
     conn = sqlite3.connect("member_database.db")
     query = (""" CREATE TABLE IF NOT EXISTS MEMBERS (
@@ -68,13 +67,6 @@ class Windows:
                                values["-ZIPCODE-"],
                                values["-MEMBERSHIP_CHECK-"])
 
-                """elif not values["-MEMBERSHIP_CHECK-"]:
-                    insert_contact(values["-FIRST_NAME-"],
-                                   values["-LAST_NAME-"],
-                                   values["-ADDRESS-"],
-                                   values["-ZIPCODE-"],
-                                   values["-MEMBERSHIP_CHECK-"])"""
-
                 Windows.success_window("added")
                 break
 
@@ -134,6 +126,7 @@ class Windows:
                     cursor.execute("SELECT * FROM members")
                     rows = cursor.fetchall()
                     window['-TABLE-'].Update(values=rows)
+                    Windows.success_window("deleted")
                 else:
                     print("No rows were deleted")
 
