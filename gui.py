@@ -4,7 +4,8 @@ create_database()
 
 sg.theme("DarkGrey3")
 
-
+# Endast "main" fönstret är skrivet i gui.py filen, 
+# alla andra fönster kallas via metoder.
 
 layout = [
     [sg.Text("PACKAN'S MEMBERSHIP MANAGEMENT\n", font=header_font)],

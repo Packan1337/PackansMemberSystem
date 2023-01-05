@@ -5,6 +5,7 @@ header_font = ("Arial", 32)
 subtitle_font = ("Arial", 24)
 default_font = ("Arial", 16)
 
+# Skapar databasen med SQL-sats.
 def create_database():
     conn = sqlite3.connect("member_database.db")
     query = (""" CREATE TABLE IF NOT EXISTS MEMBERS (
@@ -18,6 +19,7 @@ def create_database():
     conn.close()
 
 
+# Funktion som använder SQL-sats flr att lägga till members och använder sig utav relevant data.
 def insert_contact(first_name, last_name, address, zip_code, payed_membership):
     insert_conn = sqlite3.connect("member_database.db")
     insert_conn.execute(""" INSERT INTO MEMBERS (first_name, last_name, address, zip_code, payed_membership) 
@@ -26,9 +28,10 @@ def insert_contact(first_name, last_name, address, zip_code, payed_membership):
     insert_conn.close()
 
 
+# Alla fönster är en del av Windows-klassen och öppnas genom att kalla på metoder.
 class Windows:
     @staticmethod
-    def success_window(type_of_success: str):
+    def success_window(type_of_success: str):   # Fönster som bekräftar att allt gick bra.
 
         layout = [[sg.Text(f"Successfully {type_of_success} member!")],
                   [sg.Push(), sg.Button("OK", key="-OK-"), sg.Push()]]
@@ -41,8 +44,9 @@ class Windows:
                 window.close()
                 break
 
+
     @staticmethod
-    def add_window():
+    def add_window():   # Fönster där man kan lägga till användare via input rutor.
         layout = [[sg.Text("Add a new member\n", font=subtitle_font)],
                   [sg.Text("First name", size=(15, 1)), sg.Input(key="-FIRST_NAME-")],
                   [sg.Text("Last name", size=(15, 1)), sg.Input(key="-LAST_NAME-")],
@@ -76,7 +80,7 @@ class Windows:
         window.close()
 
     @staticmethod
-    def view_window():
+    def view_window():  # Visar tabell på alla medlemmar.
         conn = sqlite3.connect("member_database.db")
         cursor = conn.cursor()
 
