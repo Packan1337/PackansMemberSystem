@@ -4,6 +4,8 @@ create_database()
 
 sg.theme("DarkGrey3")
 
+
+
 layout = [
     [sg.Text("PACKAN'S MEMBERSHIP MANAGEMENT\n", font=header_font)],
     [sg.Text("Select an option below to proceed.", font=subtitle_font)],

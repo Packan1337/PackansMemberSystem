@@ -1,0 +1,9 @@
+.idea/misc.xml
+.idea/modules.xml
+.idea/PackansMemberSystem.iml
+.idea/vcs.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/.gitignore
+member_database.db
+__pycache__/backend.cpython-310.pyc
